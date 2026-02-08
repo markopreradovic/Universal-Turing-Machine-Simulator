@@ -15,6 +15,7 @@ static TapeCell* create_cell(Symbol s) {
     return cell;
 }
 
+
 Tape* tape_create(const char* initial_content, Symbol blank) {
     Tape* tape = malloc(sizeof(Tape));
     if (!tape) {

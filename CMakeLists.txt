@@ -5,11 +5,20 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
-add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wshadow -Wconversion)
+add_compile_options(
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Werror
+        -Wshadow
+        -Wconversion
+)
 
-include_directories(utm-simulator/src)
+add_executable(utm
+        utm-simulator/src/main.c
+        utm-simulator/src/tape.c
+)
 
-file(GLOB_RECURSE SOURCES "utm-simulator/src/*.c")
-
-add_executable(utm ${SOURCES}
-        utm-simulator/src/tape.h)
+target_include_directories(utm PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/utm-simulator/src
+)
