@@ -13,10 +13,12 @@ add_compile_options(
         -Wshadow
         -Wconversion
 )
-//Test
+
 add_executable(utm
         utm-simulator/src/main.c
         utm-simulator/src/tape.c
+        utm-simulator/src/tm.h
+        utm-simulator/src/tm.c
 )
 
 target_include_directories(utm PRIVATE

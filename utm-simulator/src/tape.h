@@ -27,6 +27,8 @@ void tape_write(Tape* tape, Symbol symbol);
 void tape_move_right(Tape* tape);
 void tape_move_left(Tape* tape);
 
+void tape_move(Tape* tape, char direction);
+
 void tape_print(const Tape* tape, int visible_cells);
 
 #endif

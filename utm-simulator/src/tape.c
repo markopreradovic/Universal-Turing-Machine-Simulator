@@ -107,25 +107,65 @@ void tape_print(const Tape* tape, int visible_cells) {
         return;
     }
 
-    // We go left visible_cells steps
     TapeCell* start = tape->head;
     for (int i = 0; i < visible_cells && start->left; i++) {
         start = start->left;
     }
 
+    printf("Traka: ");
     TapeCell* current = start;
     int count = 0;
 
-    printf("Traka: ");
-    while (current && count < visible_cells * 2 + 1) {
+    while (current && count < visible_cells * 2 + 3) {
+        char sym = current->symbol;
+        if (sym == tape->blank) sym = '_';
+
         if (current == tape->head) {
-            printf("[%c]", current->symbol);
+            printf(" \033[1;31m[%c]\033[0m ", sym);
         } else {
-            printf(" %c ", current->symbol);
+            printf("%c ", sym);
         }
         current = current->right;
         count++;
     }
-    if (current) printf(" ...");
+    if (current) printf("...");
     printf("\n");
+}
+
+void tape_move(Tape* tape, char direction) {
+    if (!tape || !tape->head) return;
+
+    switch (direction) {
+        case 'L':
+            if (tape->head->left) {
+                tape->head = tape->head->left;
+            } else {
+                TapeCell* new_cell = create_cell(tape->blank);
+                new_cell -> right = tape->head;
+                tape->head->left = new_cell;
+                tape->head = new_cell;
+                tape->head->left = new_cell;
+            }
+            break;
+
+        case 'R':
+            if (tape->head->right) {
+                tape->head = tape->head->right;
+            } else {
+                TapeCell* new_cell = create_cell(tape->blank);
+                new_cell->left = tape->head;
+                tape->head->right = new_cell;
+                tape->head = new_cell;
+            }
+            break;
+
+        //No move, stay in place
+        case 'S':
+        case 'N':
+            break;
+
+        default:
+            fprintf(stderr,"Unknown direction\n");
+            break;
+    }
 }
