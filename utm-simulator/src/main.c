@@ -1,44 +1,33 @@
-// src/main.c
 #include "tape.h"
 #include "tm.h"
+#include "parser.h"
 #include <stdio.h>
-#include <string.h>
+
 int main(void) {
-    // Test trake (stari dio)
-    Tape* t = tape_create("01", '_');
-    tape_print(t, 8);
-
-    tape_move(t, 'R');
-    tape_write(t, 'X');
-    tape_print(t, 8);
-
-    tape_move(t, 'L');
-    tape_move(t, 'L');
-    tape_move(t, 'S');          // ostaje na mjestu
-    tape_write(t, 'Y');
-    tape_print(t, 8);
-
-    tape_destroy(t);
-
-    // Test strukture TM
     TuringMachine* tm = tm_create();
 
-    tm_add_transition(tm, "q0", '0', "q1", '1', 'R');
-    tm_add_transition(tm, "q0", '1', "q0", '0', 'L');
-    tm_add_transition(tm, "q1", '_', "q_acc", '_', 'S');
+    const char* tm_file = "../utm-simulator/examples/increment.tm";
 
-    strcpy(tm->start_state,  "q0");
-    strcpy(tm->accept_state, "q_acc");
-    strcpy(tm->reject_state, "q_rej");
+    if (!load_tm_from_file(tm, tm_file)) {
+        fprintf(stderr, "Neuspješno učitavanje TM fajla\n");
+        tm_destroy(tm);
+        return 1;
+    }
 
-    const Transition* tr = tm_find_transition(tm, "q0", '0');
+    printf("Učitana mašina:\n");
+    printf("  start:  %s\n", tm->start_state);
+    printf("  accept: %s\n", tm->accept_state);
+    printf("  reject: %s\n", tm->reject_state);
+    printf("  blank:  %c\n", tm->blank_symbol);
+    printf("  broj prijelaza: %d\n", tm->transition_count);
+
+    // primjer traženja jednog prijelaza
+    const Transition* tr = tm_find_transition(tm, tm->start_state, '1');
     if (tr) {
-        printf("\nNađen prijelaz: %s %c → %s %c %c\n",
-               tr->current_state, tr->read_symbol,
+        printf("Primer prijelaza iz start stanja za '1': → %s %c %c\n",
                tr->next_state, tr->write_symbol, tr->move_dir);
     }
 
     tm_destroy(tm);
-
     return 0;
 }
