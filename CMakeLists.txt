@@ -21,6 +21,8 @@ add_executable(utm
         utm-simulator/src/tm.c
         utm-simulator/src/parser.h
         utm-simulator/src/parser.c
+        utm-simulator/src/simulator.h
+        utm-simulator/src/simulator.c
 )
 
 target_include_directories(utm PRIVATE
