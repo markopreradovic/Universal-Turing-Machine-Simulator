@@ -25,6 +25,11 @@ typedef struct {
 } ExecutionConfig;
 
 typedef struct {
+    char** states;          // array of state names to break on
+    size_t count;           // number of breakpoints
+} Breakpoints;
+
+typedef struct {
     ExecutionConfig* configs;
     size_t           count;
     size_t           capacity;
@@ -34,7 +39,11 @@ SimResult run_turing_machine(
     const TuringMachine* tm,
     Tape* tape,
     long max_steps,
-    bool step_mode    // true / pause after each step
+    bool step_mode,    // true / pause after each step
+    const Breakpoints* breakpoints
 );
+
+Breakpoints* create_breakpoints(const char** state_list, size_t count);
+void destroy_breakpoints(Breakpoints* bp);
 
 #endif // SIMULATOR_H

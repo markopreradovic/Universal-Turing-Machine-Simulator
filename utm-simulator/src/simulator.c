@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include "simulator.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -95,12 +96,40 @@ static void print_step(
     tape_print(tape, 20);
 }
 
+Breakpoints* create_breakpoints(const char** state_list, size_t count) {
+    Breakpoints* bp = malloc(sizeof(Breakpoints));
+    if (!bp) return NULL;
+
+    bp->states = malloc(count * sizeof(char*));
+    if (!bp->states) {
+        free(bp);
+        return NULL;
+    }
+
+    bp->count = count;
+    for (size_t i = 0; i < count; i++) {
+        bp->states[i] = strdup(state_list[i]);  // copy strings
+    }
+
+    return bp;
+}
+
+void destroy_breakpoints(Breakpoints* bp) {
+    if (!bp) return;
+    for (size_t i = 0; i < bp->count; i++) {
+        free(bp->states[i]);
+    }
+    free(bp->states);
+    free(bp);
+}
+
 // Main simulation function
 SimResult run_turing_machine(
     const TuringMachine* tm,
     Tape* tape,
     long max_steps,
-    bool step_mode           // true = pause after each step
+    bool step_mode,
+    const Breakpoints* breakpoints
 ) {
     char current_state[MAX_STATE_NAME];
     strncpy(current_state, tm->start_state, MAX_STATE_NAME - 1);
@@ -121,6 +150,7 @@ SimResult run_turing_machine(
     printf("\n");
 
     while (step < max_steps) {
+        // Check accepting/rejecting states
         if (tm_is_accepting(tm, current_state)) {
             printf("→ ACCEPTED after %ld steps\n", step);
             config_set_destroy(&seen);
@@ -130,6 +160,19 @@ SimResult run_turing_machine(
             printf("→ REJECTED after %ld steps\n", step);
             config_set_destroy(&seen);
             return REJECTED;
+        }
+
+        // Check breakpoints (if any)
+        if (breakpoints) {
+            for (size_t i = 0; i < breakpoints->count; i++) {
+                if (strcmp(current_state, breakpoints->states[i]) == 0) {
+                    printf("\033[1;33m[Breakpoint hit: state=%s at step %ld]\033[0m\n",
+                           current_state, step);
+                    printf("Press Enter to continue...\n");
+                    getchar();
+                    break;
+                }
+            }
         }
 
         Symbol symbol = tape_read(tape);
@@ -177,6 +220,7 @@ SimResult run_turing_machine(
 
         step++;
 
+        // Step-by-step pause (if enabled)
         if (step_mode) {
             printf("\n[Step %ld] Press Enter to continue (or Ctrl+C to stop)...\n", step);
             getchar();
