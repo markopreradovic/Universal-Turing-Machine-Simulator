@@ -11,8 +11,8 @@ int main(void) {
         return 1;
     }
 
-    const char* tm_file = "../utm-simulator/examples/real_loop.tm";
-    const char* input = "";
+    const char* tm_file = "../utm-simulator/examples/increment.tm";
+    const char* input = "1011";
     if (!load_tm_from_file(tm, tm_file)) {
         fprintf(stderr, "Failed to load TM file: %s\n", tm_file);
         tm_destroy(tm);
@@ -40,8 +40,8 @@ int main(void) {
     printf("Initial tape:\n");
     tape_print(tape, 20);
     printf("\n");
-
-    SimResult result = run_turing_machine(tm, tape, 1000);
+    bool step_mode = true;
+    SimResult result = run_turing_machine(tm, tape, 10000, step_mode);
 
     printf("\nFinal tape:\n");
     tape_print(tape, 20);

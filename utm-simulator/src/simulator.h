@@ -31,9 +31,10 @@ typedef struct {
 } ConfigSet;
 
 SimResult run_turing_machine(
-    const TuringMachine* tm,    // const - we don't modify the machine
-    Tape*                tape,
-    long                 max_steps
+    const TuringMachine* tm,
+    Tape* tape,
+    long max_steps,
+    bool step_mode    // true / pause after each step
 );
 
 #endif // SIMULATOR_H

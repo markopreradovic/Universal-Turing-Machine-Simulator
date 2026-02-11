@@ -76,18 +76,21 @@ static bool config_set_add(ConfigSet* set, const ExecutionConfig* config) {
 static void print_step(
     long step,
     const char* current_state,
+    long head_pos,
     Symbol read_symbol,
     const Transition* trans,
     const Tape* tape
 ) {
     if (!trans) {
-        printf("Step %4ld | %-6s | read %c   | NO TRANSITION\n",
-               step, current_state, read_symbol);
+        printf("Step %4ld | %-6s | pos %4ld | read %c   | NO TRANSITION\n",
+               step, current_state, head_pos, read_symbol);
         return;
     }
-    printf("Step %4ld | %-6s | read %c   | write %c  %c   → %-6s | ",
-           step, current_state, read_symbol,
+
+    printf("Step %4ld | %-6s | pos %4ld | read %c   | write %c  %c   → %-6s | ",
+           step, current_state, head_pos, read_symbol,
            trans->write_symbol, trans->move_dir, trans->next_state);
+
     tape_print(tape, 20);
 }
 
@@ -95,7 +98,8 @@ static void print_step(
 SimResult run_turing_machine(
     const TuringMachine* tm,
     Tape* tape,
-    long max_steps
+    long max_steps,
+    bool step_mode           // true = pause after each step
 ) {
     char current_state[MAX_STATE_NAME];
     strncpy(current_state, tm->start_state, MAX_STATE_NAME - 1);
@@ -149,7 +153,7 @@ SimResult run_turing_machine(
 
         const Transition* trans = tm_find_transition(tm, current_state, symbol);
 
-        print_step(step, current_state, symbol, trans, tape);
+        print_step(step, current_state, head_pos, symbol, trans, tape);
 
         if (!trans) {
             printf("→ NO TRANSITION after %ld steps\n", step);
@@ -171,6 +175,11 @@ SimResult run_turing_machine(
         current_state[MAX_STATE_NAME - 1] = '\0';
 
         step++;
+
+        if (step_mode) {
+            printf("\n[Step %ld] Press Enter to continue (or Ctrl+C to stop)...\n", step);
+            getchar();
+        }
     }
 
     printf("→ MAX STEPS EXCEEDED (%ld steps)\n", max_steps);
