@@ -11,8 +11,8 @@ int main(void) {
         return 1;
     }
 
-    const char* tm_file = "../utm-simulator/examples/increment.tm";
-    const char* input = "1011";
+    const char* tm_file = "../utm-simulator/examples/palindrome.tm";
+    const char* input = "0110";
     if (!load_tm_from_file(tm, tm_file)) {
         fprintf(stderr, "Failed to load TM file: %s\n", tm_file);
         tm_destroy(tm);
@@ -25,9 +25,6 @@ int main(void) {
     printf("  reject:      %s\n", tm->reject_state);
     printf("  blank:       %c\n", tm->blank_symbol);
     printf("  transitions: %d\n\n", tm->transition_count);
-
-
-
 
     Tape* tape = tape_create(input, tm->blank_symbol);
     if (!tape) {

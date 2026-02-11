@@ -82,12 +82,13 @@ static void print_step(
     const Tape* tape
 ) {
     if (!trans) {
-        printf("Step %4ld | %-6s | pos %4ld | read %c   | NO TRANSITION\n",
+        printf("Step %4ld | \033[33m%-6s\033[0m | pos %4ld | read \033[36m%c\033[0m   | \033[31mNO TRANSITION\033[0m\n",
                step, current_state, head_pos, read_symbol);
         return;
     }
 
-    printf("Step %4ld | %-6s | pos %4ld | read %c   | write %c  %c   → %-6s | ",
+    printf("Step %4ld | \033[33m%-6s\033[0m | pos %4ld | read \033[36m%c\033[0m   | "
+           "write \033[35m%c\033[0m  \033[32m%c\033[0m   → \033[33m%-6s\033[0m | ",
            step, current_state, head_pos, read_symbol,
            trans->write_symbol, trans->move_dir, trans->next_state);
 

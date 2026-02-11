@@ -112,23 +112,31 @@ void tape_print(const Tape* tape, int visible_cells) {
         start = start->left;
     }
 
-    printf("Traka: ");
+    printf("Tape: ");
+
     TapeCell* current = start;
     int count = 0;
 
-    while (current && count < visible_cells * 2 + 3) {
+    while (current && count < visible_cells * 2 + 1) {
         char sym = current->symbol;
         if (sym == tape->blank) sym = '_';
 
         if (current == tape->head) {
-            printf(" \033[1;31m[%c]\033[0m ", sym);
+            // Highlight head in red + bold
+            printf("\033[1;31m[%c]\033[0m", sym);
+        } else if (sym == '0') {
+            printf("\033[34m%c\033[0m", sym);     // blue for '0'
+        } else if (sym == '1') {
+            printf("\033[32m%c\033[0m", sym);     // green for '1'
         } else {
-            printf("%c ", sym);
+            printf("%c", sym);                    // default for '_'
         }
+
         current = current->right;
         count++;
     }
-    if (current) printf("...");
+
+    if (current) printf(" ...");
     printf("\n");
 }
 
