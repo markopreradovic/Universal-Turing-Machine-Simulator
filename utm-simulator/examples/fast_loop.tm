@@ -6,4 +6,4 @@ reject: q_reject
 q0 _ -> q_loop _ S
 
 q_loop _ -> q_loop _ R
-q_loop _ -> q_loop _ L   # ← ovdje se vrtimo lijevo-desno po istom blanku
+q_loop _ -> q_loop _ L
