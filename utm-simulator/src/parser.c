@@ -101,7 +101,6 @@ bool load_tm_from_file(TuringMachine *tm, const char* filename) {
             continue;
         }
 
-        // Warning / error
         fprintf(stderr, "Uknown format in line %d: %s\n", line_num, trimmed);
     }
 

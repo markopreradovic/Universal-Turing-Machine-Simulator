@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
     bool step_mode      = true;
     Breakpoints* breakpoints = NULL;
 
-    // Simple CLI parsing
+    // CLI parsing
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--file") == 0 || strcmp(argv[i], "-f") == 0) {
             if (i + 1 < argc) tm_file = argv[++i];
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
             if (i + 1 < argc) {
                 char* states_str = strdup(argv[++i]);
                 char* token = strtok(states_str, ",");
-                char** state_list = malloc(16 * sizeof(char*)); // max 16 za početak
+                char** state_list = malloc(16 * sizeof(char*)); // max 16
                 size_t count = 0;
 
                 while (token && count < 16) {
@@ -42,7 +42,6 @@ int main(int argc, char* argv[]) {
 
                 breakpoints = create_breakpoints((const char**)state_list, count);
 
-                // Cleanup temp array
                 for (size_t j = 0; j < count; j++) free(state_list[j]);
                 free(state_list);
                 free(states_str);
