@@ -11,8 +11,8 @@ int main(void) {
         return 1;
     }
 
-    const char* tm_file = "../utm-simulator/examples/palindrome.tm";
-    const char* input = "0110";
+    const char* tm_file = "../utm-simulator/examples/parity.tm";
+    const char* input = "1001";
     if (!load_tm_from_file(tm, tm_file)) {
         fprintf(stderr, "Failed to load TM file: %s\n", tm_file);
         tm_destroy(tm);
